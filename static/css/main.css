@@ -133,14 +133,33 @@ table {
   border-spacing: 0;
 }
 
+button[disabled] {
+  background-color: pink;
+}
+
 .container--workspace {
   display: flex;
 }
 
 .work-thread {
   background-color: #234E70;
+  width: 50vw;
+  height: 100vh;
 }
 
 .thoughts-thread {
   background-color: #FBF8BE;
+  width: 50vw;
+  height: 100vh;
+}
+
+.add-task-btn,
+.add-subtask-btn {
+  border-radius: 50%;
+  background-color: transparent;
+}
+
+.add-task-btn:hover,
+.add-subtask-btn:hover {
+  cursor: pointer;
 }/*# sourceMappingURL=main.css.map */
