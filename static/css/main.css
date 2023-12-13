@@ -207,4 +207,21 @@ button[disabled] {
 
 .subtask {
   display: flex;
+}
+
+.add-timer-btn {
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: yellow;
+}
+
+.timer__wrapper {
+  display: flex;
+}
+
+.work-session {
+  display: flex;
 }/*# sourceMappingURL=main.css.map */

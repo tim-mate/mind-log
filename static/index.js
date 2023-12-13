@@ -1,3 +1,5 @@
+import Timer from "./Timer.js";
+
 const refs = {
   addTaskBtn: document.body.querySelector(".add-task-btn"),
   taskList: document.body.querySelector(".task-list"),
@@ -71,6 +73,12 @@ function addTask(taskName) {
                 <li><button class="remove-btn"></button></li>
               </ul>
 
+              <button type="button" class="add-timer-btn">
+				        <span class="material-icons">timer</span>
+			        </button>
+
+              <ul class="work-session-list"></ul>
+
               <button class="edit-task-btn">
               </button>
             </div>
@@ -92,6 +100,7 @@ function addTask(taskName) {
   let editTaskBtn = task.querySelector(".edit-task-btn");
   let renameTaskBtn = task.querySelector(".rename-btn");
   let removeTaskBtn = task.querySelector(".remove-btn");
+  let addTimerBtn = task.querySelector(".add-timer-btn");
 
   addSubtaskBtn.addEventListener(
     "click",
@@ -108,10 +117,13 @@ function addTask(taskName) {
       "task"
     )
   );
+
   removeTaskBtn.addEventListener(
     "click",
     onRemoveTaskBtnClick.bind(null, task)
   );
+
+  addTimerBtn.addEventListener("click", onAddTimerBtnClick.bind(null, task));
 }
 
 function addSubtask(subtaskName, subtaskList) {
@@ -124,6 +136,12 @@ function addSubtask(subtaskName, subtaskList) {
 
               <li><button class="remove-btn"></button></li>
             </ul>
+
+            <button class="add-timer-btn">
+              <span class="material-icons">timer</span>
+            </button>
+
+            <ul class="work-session-list"></ul>
         </li>
     `;
 
@@ -141,17 +159,32 @@ function addSubtask(subtaskName, subtaskList) {
     "click",
     onRemoveTaskBtnClick.bind(null, subtask)
   );
+
+  let addTimerBtn = subtask.querySelector(".add-timer-btn");
+  addTimerBtn.addEventListener("click", onAddTimerBtnClick.bind(null, subtask));
 }
 
 function onEditTaskBtnClick(task) {
   let editTaskPanel = task.querySelector(".edit-task-panel");
   editTaskPanel.classList.toggle("visually-hidden");
 
+  let workSessions = Array.from(task.querySelectorAll(".work-session"));
+  workSessions.map((workSession) => {
+    return workSession
+      .querySelector(".remove-btn")
+      .classList.toggle("visually-hidden");
+  });
+
   let subtasks = Array.from(task.querySelector(".subtask-list").children);
   subtasks.map((subtask) => {
     return subtask
       .querySelector(".edit-task-panel")
       .classList.toggle("visually-hidden");
+  });
+
+  let addTimerBtns = Array.from(task.querySelectorAll(".add-timer-btn"));
+  addTimerBtns.map((addTimerBtn) => {
+    toggleBtn(addTimerBtn);
   });
 
   toggleBtn(task.querySelector(".add-subtask-btn"));
@@ -209,6 +242,79 @@ function onRemoveTaskBtnClick(task) {
   task.remove();
 }
 
+function onAddTimerBtnClick(task, event) {
+  let addTimerBtn = event.currentTarget;
+  let workSessions = task.querySelector(".work-session-list");
+  let workSessionMarkup =
+    '<li class="work-session"><div class="timer"></div><button type="button" class="remove-btn visually-hidden"></button></li>';
+
+  workSessions.insertAdjacentHTML("beforeend", workSessionMarkup);
+  let workSession = workSessions.lastElementChild;
+  let timerEl = workSession.querySelector(".timer");
+  let removeWorkSessionBtn = workSession.querySelector(".remove-btn");
+
+  hide(addTimerBtn);
+
+  timerEl.addEventListener(
+    "finish",
+    onTimerFinish.bind(null, workSession, addTimerBtn)
+  );
+  removeWorkSessionBtn.addEventListener(
+    "click",
+    onRemoveWorkSessionBtnClick.bind(
+      null,
+      workSession,
+      addTimerBtn,
+      workSessions
+    )
+  );
+
+  let newTimer = new Timer(timerEl);
+  newTimer.init();
+
+  let minutesInput = newTimer.el.timer.querySelector('input[name="minutes"]');
+  minutesInput.focus();
+
+  minutesInput.addEventListener(
+    "change",
+    onMinutesInputChange.bind(null, newTimer)
+  );
+}
+
+function onMinutesInputChange(newTimer, event) {
+  newTimer.set(event.target.value);
+  newTimer.el.timerControlBtn.addEventListener(
+    "click",
+    onTimerControlBtnClick.bind(null, newTimer)
+  );
+}
+
+function onTimerControlBtnClick(newTimer) {
+  if (newTimer.el.timerControlBtn.classList.contains("timer__control--start")) {
+    newTimer.start();
+  } else {
+    newTimer.stop();
+  }
+}
+
+function onTimerFinish(workSession, addTimerBtn, event) {
+  let minutes = event.detail.minutes;
+  let timeBlock = `${minutes}min`;
+  let timer = workSession.querySelector(".timer");
+
+  workSession.removeChild(timer);
+  workSession.insertAdjacentHTML("afterbegin", timeBlock);
+  show(addTimerBtn);
+}
+
+function onRemoveWorkSessionBtnClick(workSession, addTimerBtn, workSessions) {
+  workSession.remove();
+  if (!workSessions.querySelector(".timer")) {
+    show(addTimerBtn);
+    disableBtn(addTimerBtn);
+  }
+}
+
 function removeNewTaskInput() {
   let newTaskInput = refs.taskList.querySelector(".new-task");
   refs.taskList.removeChild(newTaskInput);
@@ -225,6 +331,14 @@ function isEmpty(value) {
   }
 
   return false;
+}
+
+function hide(el) {
+  el.classList.add("visually-hidden");
+}
+
+function show(el) {
+  el.classList.remove("visually-hidden");
 }
 
 function disableBtn(btn) {
