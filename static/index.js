@@ -356,13 +356,14 @@ function onAddTimerBtnClick(task, event) {
 
   timerEl.addEventListener(
     "finish",
-    onTimerFinish.bind(null, workSession, addTimerBtn)
+    onTimerFinish.bind(null, task, workSession, addTimerBtn)
   );
 
   removeWorkSessionBtn.addEventListener(
     "click",
     onRemoveWorkSessionBtnClick.bind(
       null,
+      task,
       workSession,
       addTimerBtn,
       workSessionList
@@ -392,25 +393,32 @@ function onTimerControlBtnClick(newTimer) {
   }
 }
 
-function onTimerFinish(workSession, addTimerBtn, event) {
+function onTimerFinish(task, workSession, addTimerBtn, event) {
+  let taskIsCompleted = task.querySelector('input[type="checkbox"]').checked;
   let minutes = event.detail.minutes;
   let timeBlock = `${minutes}min`;
   let timer = workSession.querySelector(".timer");
 
   timer.remove();
   workSession.insertAdjacentHTML("afterbegin", timeBlock);
-  show(addTimerBtn);
+
+  if (!taskIsCompleted) {
+    show(addTimerBtn);
+  }
 }
 
 function onRemoveWorkSessionBtnClick(
+  task,
   workSession,
   addTimerBtn,
   workSessionList
 ) {
   workSession.remove();
-  let hasTimer = workSessionList.querySelector(".timer");
 
-  if (!hasTimer) {
+  let taskHasTimer = workSessionList.querySelector(".timer");
+  let taskIsCompleted = task.querySelector('input[type="checkbox"]').checked;
+
+  if (!taskHasTimer && !taskIsCompleted) {
     show(addTimerBtn);
     disableBtn(addTimerBtn);
   }
