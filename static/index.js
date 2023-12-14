@@ -15,32 +15,38 @@ refs.addTaskBtn.addEventListener("click", onAddTaskBtnClick);
 
 function onAddTaskBtnClick() {
   refs.taskList.insertAdjacentHTML("beforeend", newTaskMarkup);
+  disableBtn(refs.addTaskBtn);
+
   let newTask = refs.taskList.lastElementChild;
+  let newTaskInput = newTask.querySelector('input[name="newTaskName"]');
   let removeNewTaskBtn = newTask.querySelector(".remove-btn");
+
+  newTaskInput.focus();
+  newTaskInput.addEventListener("change", onNewTaskInputChange);
 
   removeNewTaskBtn.addEventListener(
     "click",
     onRemoveNewTaskBtnClick.bind(null, newTask)
   );
-
-  disableBtn(refs.addTaskBtn);
-
-  let newTaskInput = newTask.querySelector('input[name="newTaskName"]');
-
-  newTaskInput.focus();
-  newTaskInput.addEventListener("change", onNewTaskInputChange);
 }
 
 function onAddSubtaskBtnClick(task) {
   let subtaskList = task.querySelector(".subtask-list");
+  let addSubtaskBtn = task.querySelector(".add-subtask-btn");
+  let editTaskBtn = task.querySelector(".edit-task-btn");
+  let addTimerBtn = task.querySelector(".add-timer-btn");
+
   subtaskList.insertAdjacentHTML("beforeend", newSubtaskMarkup);
 
   let newSubtask = subtaskList.lastElementChild;
-  let addSubtaskBtn = task.querySelector(".add-subtask-btn");
-  let editTaskBtn = task.querySelector(".edit-task-btn");
   let removeNewSubtaskBtn = newSubtask.querySelector(".remove-btn");
+  let newSubtaskInput = newSubtask.querySelector(
+    'input[name="newSubtaskName"]'
+  );
 
   disableBtn(editTaskBtn);
+  disableBtn(addSubtaskBtn);
+  hide(addTimerBtn);
 
   removeNewSubtaskBtn.addEventListener(
     "click",
@@ -52,38 +58,46 @@ function onAddSubtaskBtnClick(task) {
     )
   );
 
-  disableBtn(addSubtaskBtn);
-
-  let newSubtaskInput = task.querySelector('input[name="newSubtaskName"]');
   newSubtaskInput.focus();
   newSubtaskInput.addEventListener(
     "change",
-    onNewSubtaskInputChange.bind(null, task, editTaskBtn)
+    onNewSubtaskInputChange.bind(null, editTaskBtn, subtaskList, addSubtaskBtn)
   );
-
-  let addTimerBtn = task.querySelector(".add-timer-btn");
-  hide(addTimerBtn);
 }
 
 function onNewTaskInputChange(event) {
   let newTaskName = event.target.value;
 
   if (!isEmpty(newTaskName)) {
+    removeNewTask();
     addTask(newTaskName);
-    removeNewTaskInput();
     enableBtn(refs.addTaskBtn);
   }
 }
 
-function onNewSubtaskInputChange(task, editTaskBtn, event) {
+function onNewSubtaskInputChange(
+  editTaskBtn,
+  subtaskList,
+  addSubtaskBtn,
+  event
+) {
   let newSubtaskName = event.target.value;
-  let subtaskList = task.querySelector(".subtask-list");
 
   if (!isEmpty(newSubtaskName)) {
+    removeNewSubtask(subtaskList);
     addSubtask(newSubtaskName, subtaskList, editTaskBtn);
-    removeNewSubtaskInput(subtaskList);
-    enableBtn(task.querySelector(".add-subtask-btn"));
+    enableBtn(addSubtaskBtn);
   }
+}
+
+function removeNewTask() {
+  let newTask = refs.taskList.querySelector(".new-task");
+  newTask.remove();
+}
+
+function removeNewSubtask(subtaskList) {
+  let newSubtask = subtaskList.querySelector(".new-subtask");
+  newSubtask.remove();
 }
 
 function addTask(taskName) {
@@ -134,6 +148,7 @@ function addTask(taskName) {
   );
 
   editTaskBtn.addEventListener("click", onEditTaskBtnClick.bind(null, task));
+
   renameTaskBtn.addEventListener(
     "click",
     onRenameTaskBtnClick.bind(
@@ -177,64 +192,65 @@ function addSubtask(subtaskName, subtaskList, editTaskBtn) {
     `;
 
   subtaskList.insertAdjacentHTML("beforeend", subtaskMarkup);
-  let subtask = subtaskList.lastElementChild;
+  enableBtn(editTaskBtn);
 
+  let subtask = subtaskList.lastElementChild;
   let renameSubtaskBtn = subtask.querySelector(".rename-btn");
+  let removeSubtaskBtn = subtask.querySelector(".remove-btn");
+  let addTimerBtn = subtask.querySelector(".add-timer-btn");
+  let subtaskCheckbox = subtask.querySelector('input[type="checkbox"]');
+
   renameSubtaskBtn.addEventListener(
     "click",
     onRenameTaskBtnClick.bind(null, subtask, subtask, "subtask")
   );
 
-  let removeSubtaskBtn = subtask.querySelector(".remove-btn");
   removeSubtaskBtn.addEventListener(
     "click",
     onRemoveSubtaskBtnClick.bind(null, subtask, subtaskList)
   );
 
-  let addTimerBtn = subtask.querySelector(".add-timer-btn");
   addTimerBtn.addEventListener("click", onAddTimerBtnClick.bind(null, subtask));
 
-  let subtaskCheckbox = subtask.querySelector('input[type="checkbox"]');
   subtaskCheckbox.addEventListener(
     "change",
     onSubtaskCheckboxChange.bind(null, subtask)
   );
-
-  enableBtn(editTaskBtn);
 }
 
 function onEditTaskBtnClick(task) {
   let editTaskPanel = task.querySelector(".edit-task-panel");
-  editTaskPanel.classList.toggle("visually-hidden");
-
+  let addSubtaskBtn = task.querySelector(".add-subtask-btn");
+  let subtasks = Array.from(task.querySelector(".subtask-list").children);
   let workSessions = Array.from(task.querySelectorAll(".work-session"));
+  let addTimerBtns = Array.from(task.querySelectorAll(".add-timer-btn"));
+
+  editTaskPanel.classList.toggle("visually-hidden");
+  toggleBtn(addSubtaskBtn);
+
   workSessions.map((workSession) => {
     return workSession
       .querySelector(".remove-btn")
       .classList.toggle("visually-hidden");
   });
 
-  let subtasks = Array.from(task.querySelector(".subtask-list").children);
   subtasks.map((subtask) => {
     return subtask
       .querySelector(".edit-task-panel")
       .classList.toggle("visually-hidden");
   });
 
-  let addTimerBtns = Array.from(task.querySelectorAll(".add-timer-btn"));
   addTimerBtns.map((addTimerBtn) => {
     toggleBtn(addTimerBtn);
   });
-
-  toggleBtn(task.querySelector(".add-subtask-btn"));
 }
 
 function onRenameTaskBtnClick(task, labelParent, taskType, event) {
+  let renameBtn = event.target;
   let label = task.querySelector("label");
   let taskName = label.childNodes[1].data;
   let newLabelInputMarkup =
     '<label class="new-label"><input type="checkbox"><input type="text" name="newName" autocomplete="off" autofocus></label>';
-  let renameBtn = event.target;
 
   disableBtn(renameBtn);
 
@@ -242,38 +258,51 @@ function onRenameTaskBtnClick(task, labelParent, taskType, event) {
   labelParent.insertAdjacentHTML("afterbegin", newLabelInputMarkup);
 
   let newLabelInput = labelParent.querySelector('input[name="newName"]');
+  let enterKeyPressed = false;
+
   newLabelInput.value = taskName;
   newLabelInput.focus();
 
-  let enterKeyPressed = false;
-
   newLabelInput.addEventListener("blur", function (event) {
     if (!enterKeyPressed) {
-      onNewLabelInputChange(labelParent, renameBtn, taskType, event);
+      onNewLabelInputChange(task, labelParent, renameBtn, taskType, event);
     }
   });
 
   newLabelInput.addEventListener("keydown", function (event) {
     if (event.code === "Enter") {
       enterKeyPressed = true;
-      onNewLabelInputChange(labelParent, renameBtn, taskType, event);
+      onNewLabelInputChange(task, labelParent, renameBtn, taskType, event);
     }
-
-    enterKeyPressed = false;
   });
 }
 
-function onNewLabelInputChange(labelParent, renameBtn, taskType, event) {
-  let newLabelInput = event.target;
-  let newLabelValue = newLabelInput.value;
+function onNewLabelInputChange(task, labelParent, renameBtn, taskType, event) {
+  let newLabelValue = event.target.value;
 
   if (!isEmpty(newLabelValue)) {
     let labelMarkup = `<label class="${taskType}-label"><input type="checkbox" name="${taskType}">${newLabelValue}</label>`;
     let newLabel = labelParent.querySelector(".new-label");
 
-    labelParent.removeChild(newLabel);
+    newLabel.remove();
     labelParent.insertAdjacentHTML("afterbegin", labelMarkup);
     enableBtn(renameBtn);
+
+    let checkbox = labelParent.querySelector('input[type="checkbox"]');
+
+    if (taskType === "task") {
+      let addTimerBtn = task.querySelector(".add-timer-btn");
+
+      checkbox.addEventListener(
+        "change",
+        onTaskCheckboxChange.bind(null, task, addTimerBtn)
+      );
+    } else {
+      checkbox.addEventListener(
+        "change",
+        onSubtaskCheckboxChange.bind(null, task)
+      );
+    }
   }
 }
 
@@ -290,45 +319,31 @@ function onRemoveSubtaskBtnClick(subtask, subtaskList) {
   }
 }
 
+function onRemoveNewTaskBtnClick(newTask) {
+  newTask.remove();
+  enableBtn(refs.addTaskBtn);
+}
+
 function onRemoveNewSubtaskBtnClick(newSubtask, addSubtaskBtn, editTaskBtn) {
   newSubtask.remove();
   enableBtn(addSubtaskBtn);
   enableBtn(editTaskBtn);
 }
 
-function onRemoveNewTaskBtnClick(newTask) {
-  newTask.remove();
-  enableBtn(refs.addTaskBtn);
-}
-
 function onAddTimerBtnClick(task, event) {
   let addTimerBtn = event.currentTarget;
-  let workSessions = task.querySelector(".work-session-list");
+  let workSessionList = task.querySelector(".work-session-list");
   let workSessionMarkup =
     '<li class="work-session"><div class="timer"></div><button type="button" class="remove-btn visually-hidden"></button></li>';
 
-  workSessions.insertAdjacentHTML("beforeend", workSessionMarkup);
-  let workSession = workSessions.lastElementChild;
-  let timerEl = workSession.querySelector(".timer");
+  workSessionList.insertAdjacentHTML("beforeend", workSessionMarkup);
+
+  let workSession = workSessionList.lastElementChild;
   let removeWorkSessionBtn = workSession.querySelector(".remove-btn");
+  let timerEl = workSession.querySelector(".timer");
+  let newTimer = new Timer(timerEl);
 
   hide(addTimerBtn);
-
-  timerEl.addEventListener(
-    "finish",
-    onTimerFinish.bind(null, workSession, addTimerBtn)
-  );
-  removeWorkSessionBtn.addEventListener(
-    "click",
-    onRemoveWorkSessionBtnClick.bind(
-      null,
-      workSession,
-      addTimerBtn,
-      workSessions
-    )
-  );
-
-  let newTimer = new Timer(timerEl);
   newTimer.init();
 
   let minutesInput = newTimer.el.timer.querySelector('input[name="minutes"]');
@@ -338,10 +353,27 @@ function onAddTimerBtnClick(task, event) {
     "change",
     onMinutesInputChange.bind(null, newTimer)
   );
+
+  timerEl.addEventListener(
+    "finish",
+    onTimerFinish.bind(null, workSession, addTimerBtn)
+  );
+
+  removeWorkSessionBtn.addEventListener(
+    "click",
+    onRemoveWorkSessionBtnClick.bind(
+      null,
+      workSession,
+      addTimerBtn,
+      workSessionList
+    )
+  );
 }
 
 function onMinutesInputChange(newTimer, event) {
-  newTimer.set(event.target.value);
+  let minutes = event.target.value;
+
+  newTimer.set(minutes);
   newTimer.el.timerControlBtn.addEventListener(
     "click",
     onTimerControlBtnClick.bind(null, newTimer)
@@ -349,7 +381,11 @@ function onMinutesInputChange(newTimer, event) {
 }
 
 function onTimerControlBtnClick(newTimer) {
-  if (newTimer.el.timerControlBtn.classList.contains("timer__control--start")) {
+  let isStopped = newTimer.el.timerControlBtn.classList.contains(
+    "timer__control--start"
+  );
+
+  if (isStopped) {
     newTimer.start();
   } else {
     newTimer.stop();
@@ -361,14 +397,20 @@ function onTimerFinish(workSession, addTimerBtn, event) {
   let timeBlock = `${minutes}min`;
   let timer = workSession.querySelector(".timer");
 
-  workSession.removeChild(timer);
+  timer.remove();
   workSession.insertAdjacentHTML("afterbegin", timeBlock);
   show(addTimerBtn);
 }
 
-function onRemoveWorkSessionBtnClick(workSession, addTimerBtn, workSessions) {
+function onRemoveWorkSessionBtnClick(
+  workSession,
+  addTimerBtn,
+  workSessionList
+) {
   workSession.remove();
-  if (!workSessions.querySelector(".timer")) {
+  let hasTimer = workSessionList.querySelector(".timer");
+
+  if (!hasTimer) {
     show(addTimerBtn);
     disableBtn(addTimerBtn);
   }
@@ -395,22 +437,14 @@ function onSubtaskCheckboxChange(subtask, event) {
   if (event.target.checked) {
     hide(addTimerBtn);
   } else {
-    let workSessionList = subtask.querySelector(".work-session-list");
+    let hasTimer = subtask
+      .querySelector(".work-session-list")
+      .querySelector(".timer");
 
-    if (!workSessionList.querySelector(".timer")) {
+    if (!hasTimer) {
       show(addTimerBtn);
     }
   }
-}
-
-function removeNewTaskInput() {
-  let newTaskInput = refs.taskList.querySelector(".new-task");
-  refs.taskList.removeChild(newTaskInput);
-}
-
-function removeNewSubtaskInput(subtaskList) {
-  let newSubtaskInput = subtaskList.querySelector(".new-subtask");
-  subtaskList.removeChild(newSubtaskInput);
 }
 
 function isEmpty(value) {

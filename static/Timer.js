@@ -69,13 +69,6 @@ export default class Timer {
     this.el.timerControlBtn.innerHTML = `<span class="material-icons">play_arrow</span>`;
   }
 
-  finish() {
-    this.stop();
-    this.el.minutes.innerHTML = "00";
-    this.el.seconds.innerHTML = "00";
-    this.el.timer.dispatchEvent(this.finishEvent);
-  }
-
   tick() {
     let minutes = Math.floor(this.seconds / 60)
       .toString()
@@ -86,5 +79,12 @@ export default class Timer {
     this.el.seconds.innerHTML = seconds;
 
     this.seconds--;
+  }
+
+  finish() {
+    this.stop();
+    this.el.minutes.innerHTML = "00";
+    this.el.seconds.innerHTML = "00";
+    this.el.timer.dispatchEvent(this.finishEvent);
   }
 }
