@@ -18,6 +18,13 @@ export default class Timer {
       <span class="material-icons">play_arrow</span>
     </button>
     `;
+
+    this.el.minutesInput = this.el.timer.querySelector('input[name="minutes"]');
+    this.el.minutesInput.focus();
+    this.el.minutesInput.addEventListener(
+      "change",
+      this.onMinutesInputChange.bind(this)
+    );
   }
 
   set(minutes) {
@@ -92,5 +99,27 @@ export default class Timer {
     this.el.seconds.innerHTML = "00";
     this.el.pageTitle.innerHTML = this.title;
     this.el.timer.dispatchEvent(this.finishEvent);
+  }
+
+  onMinutesInputChange(event) {
+    let minutes = event.target.value;
+
+    this.set(minutes);
+    this.el.timerControlBtn.addEventListener(
+      "click",
+      this.onTimerControlBtnClick.bind(this)
+    );
+  }
+
+  onTimerControlBtnClick() {
+    let isStopped = this.el.timerControlBtn.classList.contains(
+      "timer__control--start"
+    );
+
+    if (isStopped) {
+      this.start();
+    } else {
+      this.stop();
+    }
   }
 }

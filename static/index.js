@@ -347,14 +347,6 @@ function onAddTimerBtnClick(task, event) {
   hide(addTimerBtn);
   newTimer.init();
 
-  let minutesInput = newTimer.el.timer.querySelector('input[name="minutes"]');
-  minutesInput.focus();
-
-  minutesInput.addEventListener(
-    "change",
-    onMinutesInputChange.bind(null, newTimer)
-  );
-
   timerEl.addEventListener(
     "finish",
     onTimerFinish.bind(null, task, workSession, addTimerBtn)
@@ -370,28 +362,6 @@ function onAddTimerBtnClick(task, event) {
       workSessionList
     )
   );
-}
-
-function onMinutesInputChange(newTimer, event) {
-  let minutes = event.target.value;
-
-  newTimer.set(minutes);
-  newTimer.el.timerControlBtn.addEventListener(
-    "click",
-    onTimerControlBtnClick.bind(null, newTimer)
-  );
-}
-
-function onTimerControlBtnClick(newTimer) {
-  let isStopped = newTimer.el.timerControlBtn.classList.contains(
-    "timer__control--start"
-  );
-
-  if (isStopped) {
-    newTimer.start();
-  } else {
-    newTimer.stop();
-  }
 }
 
 function onTimerFinish(task, workSession, addTimerBtn, event) {
@@ -418,8 +388,11 @@ function onRemoveWorkSessionBtnClick(
 
   let taskHasTimer = workSessionList.querySelector(".timer");
   let taskIsCompleted = task.querySelector('input[type="checkbox"]').checked;
+  let taskHasSubtasks = task.classList.contains("task")
+    ? task.querySelector(".subtask-list").children.length !== 0
+    : false;
 
-  if (!taskHasTimer && !taskIsCompleted) {
+  if (!taskHasTimer && !taskIsCompleted && !taskHasSubtasks) {
     show(addTimerBtn);
     disableBtn(addTimerBtn);
   }
