@@ -414,6 +414,10 @@ function onAddTimerBtnClick(task, event) {
 
 function onTimerFinish(task, workSession, addTimerBtn, event) {
   let taskIsCompleted = task.querySelector('input[type="checkbox"]').checked;
+  let taskHasSubtasks = task.querySelector(".subtask-list")
+    ? task.querySelector(".subtask-list").children.length !== 0
+    : false;
+
   let minutes = event.detail.minutes;
   let timeBlock = `${minutes}min`;
   let timer = workSession.querySelector(".timer");
@@ -421,7 +425,7 @@ function onTimerFinish(task, workSession, addTimerBtn, event) {
   timer.remove();
   workSession.insertAdjacentHTML("afterbegin", timeBlock);
 
-  if (!taskIsCompleted) {
+  if (!taskIsCompleted && !taskHasSubtasks) {
     show(addTimerBtn);
   }
 

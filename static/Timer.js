@@ -98,6 +98,10 @@ export default class Timer {
   }
 
   finish() {
+    if (this.seconds === 0) {
+      this.playSound("./static/finish-timer.mp3");
+    }
+
     this.stop();
     this.el.minutes.innerHTML = "00";
     this.el.seconds.innerHTML = "00";
@@ -117,6 +121,8 @@ export default class Timer {
   }
 
   onTimerControlBtnClick() {
+    this.playSound("./static/click-timer-control-btn.mp3");
+
     let isStopped = this.el.timerControlBtn.classList.contains(
       "timer__control--start"
     );
@@ -126,5 +132,20 @@ export default class Timer {
     } else {
       this.stop();
     }
+  }
+
+  playSound(path) {
+    let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    let source = audioContext.createBufferSource();
+
+    fetch(path)
+      .then((response) => response.arrayBuffer())
+      .then((data) => audioContext.decodeAudioData(data))
+      .then((buffer) => {
+        source.buffer = buffer;
+        source.connect(audioContext.destination);
+        source.start(0);
+      })
+      .catch((error) => console.error("Error loading audio file:", error));
   }
 }
