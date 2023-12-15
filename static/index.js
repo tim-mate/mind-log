@@ -1,6 +1,7 @@
 import Timer from "./Timer.js";
 
 const refs = {
+  pageTitle: document.querySelector("title"),
   addTaskBtn: document.body.querySelector(".add-task-btn"),
   taskList: document.body.querySelector(".task-list"),
 };
@@ -341,7 +342,7 @@ function onAddTimerBtnClick(task, event) {
   let workSession = workSessionList.lastElementChild;
   let removeWorkSessionBtn = workSession.querySelector(".remove-btn");
   let timerEl = workSession.querySelector(".timer");
-  let newTimer = new Timer(timerEl);
+  let newTimer = new Timer(timerEl, refs.pageTitle);
 
   hide(addTimerBtn);
   newTimer.init();

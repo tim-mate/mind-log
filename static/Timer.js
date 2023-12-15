@@ -1,7 +1,8 @@
 export default class Timer {
-  constructor(timer) {
+  constructor(timer, pageTitle) {
     this.el = {
       timer: timer,
+      pageTitle: pageTitle,
     };
 
     this.isStarted = false;
@@ -35,6 +36,9 @@ export default class Timer {
 
       <div class="timer__part timer__part--seconds">00</div>
     `;
+
+    this.title = this.el.pageTitle.innerHTML;
+    this.el.pageTitle.innerHTML = `${minutes}:00 - ${this.title}`;
 
     this.el.minutes = this.el.timer.querySelector(".timer__part--minutes");
     this.el.seconds = this.el.timer.querySelector(".timer__part--seconds");
@@ -77,6 +81,7 @@ export default class Timer {
 
     this.el.minutes.innerHTML = minutes;
     this.el.seconds.innerHTML = seconds;
+    this.el.pageTitle.innerHTML = `${minutes}:${seconds} - ${this.title}`;
 
     this.seconds--;
   }
@@ -85,6 +90,7 @@ export default class Timer {
     this.stop();
     this.el.minutes.innerHTML = "00";
     this.el.seconds.innerHTML = "00";
+    this.el.pageTitle.innerHTML = this.title;
     this.el.timer.dispatchEvent(this.finishEvent);
   }
 }
