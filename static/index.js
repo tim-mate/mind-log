@@ -4,6 +4,7 @@ const refs = {
   pageTitle: document.querySelector("title"),
   addTaskBtn: document.body.querySelector(".add-task-btn"),
   taskList: document.body.querySelector(".task-list"),
+  taskTimerArray: [],
 };
 
 let newTaskMarkup =
@@ -309,6 +310,15 @@ function onNewLabelInputChange(task, labelParent, renameBtn, taskType, event) {
 
 function onRemoveTaskBtnClick(task) {
   task.remove();
+
+  refs.taskTimerArray = refs.taskTimerArray.filter((pair) => {
+    if (pair[0] === task) {
+      pair[1].finish();
+      return false;
+    }
+
+    return true;
+  });
 }
 
 function onRemoveSubtaskBtnClick(subtask, subtaskList) {
@@ -318,6 +328,15 @@ function onRemoveSubtaskBtnClick(subtask, subtaskList) {
     let addTimerBtn = subtaskList.parentNode.querySelector(".add-timer-btn");
     show(addTimerBtn);
   }
+
+  refs.taskTimerArray = refs.taskTimerArray.filter((pair) => {
+    if (pair[0] === subtask) {
+      pair[1].finish();
+      return false;
+    }
+
+    return true;
+  });
 }
 
 function onRemoveNewTaskBtnClick(newTask) {
@@ -345,6 +364,7 @@ function onAddTimerBtnClick(task, event) {
   let newTimer = new Timer(timerEl, refs.pageTitle);
 
   hide(addTimerBtn);
+  refs.taskTimerArray.push([task, newTimer]);
   newTimer.init();
 
   timerEl.addEventListener(
@@ -359,7 +379,8 @@ function onAddTimerBtnClick(task, event) {
       task,
       workSession,
       addTimerBtn,
-      workSessionList
+      workSessionList,
+      newTimer
     )
   );
 }
@@ -376,14 +397,21 @@ function onTimerFinish(task, workSession, addTimerBtn, event) {
   if (!taskIsCompleted) {
     show(addTimerBtn);
   }
+
+  refs.taskTimerArray = refs.taskTimerArray.filter((pair) => pair[0] !== task);
 }
 
 function onRemoveWorkSessionBtnClick(
   task,
   workSession,
   addTimerBtn,
-  workSessionList
+  workSessionList,
+  newTimer
 ) {
+  let workSessionHasTimer = workSession.querySelector(".timer");
+  if (workSessionHasTimer) {
+    newTimer.finish();
+  }
   workSession.remove();
 
   let taskHasTimer = workSessionList.querySelector(".timer");
