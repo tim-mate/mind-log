@@ -5,7 +5,9 @@ export default class Timer {
       pageTitle: pageTitle,
     };
 
+    this.isSet = false;
     this.isStarted = false;
+    this.isFinished = false;
   }
 
   init() {
@@ -28,6 +30,8 @@ export default class Timer {
   }
 
   set(minutes) {
+    this.isSet = true;
+
     this.finishEvent = new CustomEvent("finish", {
       detail: {
         minutes: minutes,
@@ -99,6 +103,7 @@ export default class Timer {
     this.el.seconds.innerHTML = "00";
     this.el.pageTitle.innerHTML = this.title;
     this.el.timer.dispatchEvent(this.finishEvent);
+    this.isFinished = true;
   }
 
   onMinutesInputChange(event) {

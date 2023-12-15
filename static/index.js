@@ -54,6 +54,9 @@ function onAddSubtaskBtnClick(task) {
     "click",
     onRemoveNewSubtaskBtnClick.bind(
       null,
+      task,
+      subtaskList,
+      addTimerBtn,
       newSubtask,
       addSubtaskBtn,
       editTaskBtn
@@ -313,7 +316,12 @@ function onRemoveTaskBtnClick(task) {
 
   refs.taskTimerArray = refs.taskTimerArray.filter((pair) => {
     if (pair[0] === task) {
-      pair[1].finish();
+      let pairTimer = pair[1];
+
+      if (pairTimer.isSet) {
+        pairTimer.finish();
+      }
+
       return false;
     }
 
@@ -331,7 +339,12 @@ function onRemoveSubtaskBtnClick(subtask, subtaskList) {
 
   refs.taskTimerArray = refs.taskTimerArray.filter((pair) => {
     if (pair[0] === subtask) {
-      pair[1].finish();
+      let pairTimer = pair[1];
+
+      if (pairTimer.isSet) {
+        pairTimer.finish();
+      }
+
       return false;
     }
 
@@ -344,10 +357,24 @@ function onRemoveNewTaskBtnClick(newTask) {
   enableBtn(refs.addTaskBtn);
 }
 
-function onRemoveNewSubtaskBtnClick(newSubtask, addSubtaskBtn, editTaskBtn) {
+function onRemoveNewSubtaskBtnClick(
+  task,
+  subtaskList,
+  addTimerBtn,
+  newSubtask,
+  addSubtaskBtn,
+  editTaskBtn
+) {
   newSubtask.remove();
   enableBtn(addSubtaskBtn);
   enableBtn(editTaskBtn);
+
+  let taskIsCompleted = task.querySelector("input[type=checkbox]").checked;
+  let taskHasSubtasks = subtaskList.children.length !== 0;
+
+  if (!taskIsCompleted && !taskHasSubtasks) {
+    show(addTimerBtn);
+  }
 }
 
 function onAddTimerBtnClick(task, event) {
@@ -408,8 +435,7 @@ function onRemoveWorkSessionBtnClick(
   workSessionList,
   newTimer
 ) {
-  let workSessionHasTimer = workSession.querySelector(".timer");
-  if (workSessionHasTimer) {
+  if (newTimer.isSet && !newTimer.isFinished) {
     newTimer.finish();
   }
   workSession.remove();
