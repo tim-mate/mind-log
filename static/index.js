@@ -55,7 +55,6 @@ function onAddSubtaskBtnClick(task) {
     onRemoveNewSubtaskBtnClick.bind(
       null,
       task,
-      subtaskList,
       addTimerBtn,
       newSubtask,
       addSubtaskBtn,
@@ -66,7 +65,13 @@ function onAddSubtaskBtnClick(task) {
   newSubtaskInput.focus();
   newSubtaskInput.addEventListener(
     "change",
-    onNewSubtaskInputChange.bind(null, editTaskBtn, subtaskList, addSubtaskBtn)
+    onNewSubtaskInputChange.bind(
+      null,
+      task,
+      editTaskBtn,
+      subtaskList,
+      addSubtaskBtn
+    )
   );
 }
 
@@ -81,6 +86,7 @@ function onNewTaskInputChange(event) {
 }
 
 function onNewSubtaskInputChange(
+  task,
   editTaskBtn,
   subtaskList,
   addSubtaskBtn,
@@ -90,7 +96,7 @@ function onNewSubtaskInputChange(
 
   if (!isEmpty(newSubtaskName)) {
     removeNewSubtask(subtaskList);
-    addSubtask(newSubtaskName, subtaskList, editTaskBtn);
+    addSubtask(task, newSubtaskName, subtaskList, editTaskBtn);
     enableBtn(addSubtaskBtn);
   }
 }
@@ -177,7 +183,7 @@ function addTask(taskName) {
   );
 }
 
-function addSubtask(subtaskName, subtaskList, editTaskBtn) {
+function addSubtask(task, subtaskName, subtaskList, editTaskBtn) {
   let subtaskMarkup = `
         <li class="subtask">
           <label class="subtask-label"><input type="checkbox" name="subtask">${subtaskName}</label>
@@ -212,7 +218,7 @@ function addSubtask(subtaskName, subtaskList, editTaskBtn) {
 
   removeSubtaskBtn.addEventListener(
     "click",
-    onRemoveSubtaskBtnClick.bind(null, subtask, subtaskList)
+    onRemoveSubtaskBtnClick.bind(null, task, subtask, subtaskList)
   );
 
   addTimerBtn.addEventListener("click", onAddTimerBtnClick.bind(null, subtask));
@@ -329,10 +335,10 @@ function onRemoveTaskBtnClick(task) {
   });
 }
 
-function onRemoveSubtaskBtnClick(subtask, subtaskList) {
+function onRemoveSubtaskBtnClick(task, subtask, subtaskList) {
   subtask.remove();
 
-  if (subtaskList.children.length == 0) {
+  if (canShowAddTimerBtn(task)) {
     let addTimerBtn = subtaskList.parentNode.querySelector(".add-timer-btn");
     show(addTimerBtn);
   }
@@ -359,7 +365,6 @@ function onRemoveNewTaskBtnClick(newTask) {
 
 function onRemoveNewSubtaskBtnClick(
   task,
-  subtaskList,
   addTimerBtn,
   newSubtask,
   addSubtaskBtn,
@@ -369,10 +374,7 @@ function onRemoveNewSubtaskBtnClick(
   enableBtn(addSubtaskBtn);
   enableBtn(editTaskBtn);
 
-  let taskIsCompleted = task.querySelector("input[type=checkbox]").checked;
-  let taskHasSubtasks = subtaskList.children.length !== 0;
-
-  if (!taskIsCompleted && !taskHasSubtasks) {
+  if (canShowAddTimerBtn(task)) {
     show(addTimerBtn);
   }
 }
@@ -406,18 +408,12 @@ function onAddTimerBtnClick(task, event) {
       task,
       workSession,
       addTimerBtn,
-      workSessionList,
       newTimer
     )
   );
 }
 
 function onTimerFinish(task, workSession, addTimerBtn, event) {
-  let taskIsCompleted = task.querySelector('input[type="checkbox"]').checked;
-  let taskHasSubtasks = task.querySelector(".subtask-list")
-    ? task.querySelector(".subtask-list").children.length !== 0
-    : false;
-
   let minutes = event.detail.minutes;
   let timeBlock = `${minutes}min`;
   let timer = workSession.querySelector(".timer");
@@ -425,32 +421,20 @@ function onTimerFinish(task, workSession, addTimerBtn, event) {
   timer.remove();
   workSession.insertAdjacentHTML("afterbegin", timeBlock);
 
-  if (!taskIsCompleted && !taskHasSubtasks) {
+  if (canShowAddTimerBtn(task)) {
     show(addTimerBtn);
   }
 
   refs.taskTimerArray = refs.taskTimerArray.filter((pair) => pair[0] !== task);
 }
 
-function onRemoveWorkSessionBtnClick(
-  task,
-  workSession,
-  addTimerBtn,
-  workSessionList,
-  newTimer
-) {
+function onRemoveWorkSessionBtnClick(task, workSession, addTimerBtn, newTimer) {
   if (newTimer.isSet && !newTimer.isFinished) {
     newTimer.finish();
   }
   workSession.remove();
 
-  let taskHasTimer = workSessionList.querySelector(".timer");
-  let taskIsCompleted = task.querySelector('input[type="checkbox"]').checked;
-  let taskHasSubtasks = task.classList.contains("task")
-    ? task.querySelector(".subtask-list").children.length !== 0
-    : false;
-
-  if (!taskHasTimer && !taskIsCompleted && !taskHasSubtasks) {
+  if (canShowAddTimerBtn(task)) {
     show(addTimerBtn);
     disableBtn(addTimerBtn);
   }
@@ -485,6 +469,18 @@ function onSubtaskCheckboxChange(subtask, event) {
       show(addTimerBtn);
     }
   }
+}
+
+function canShowAddTimerBtn(task) {
+  let isCompleted = task.querySelector('input[type="checkbox"]').checked;
+  let hasTimer = task
+    .querySelector(".work-session-list")
+    .querySelector(".timer");
+  let hasSubtasks = task.classList.contains("task")
+    ? task.querySelector(".subtask-list").children.length !== 0
+    : false;
+
+  return !isCompleted && !hasSubtasks && !hasTimer;
 }
 
 function isEmpty(value) {
