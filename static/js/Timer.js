@@ -99,7 +99,7 @@ export default class Timer {
 
   finish() {
     if (this.seconds === 0) {
-      this.playSound("./static/finish-timer.mp3");
+      this.playSound("./static/sounds/finish-timer.mp3");
     }
 
     this.stop();
@@ -121,7 +121,7 @@ export default class Timer {
   }
 
   onTimerControlBtnClick() {
-    this.playSound("./static/click-timer-control-btn.mp3");
+    this.playSound("./static/sounds/click-timer-control-btn.mp3");
 
     let isStopped = this.el.timerControlBtn.classList.contains(
       "timer__control--start"
