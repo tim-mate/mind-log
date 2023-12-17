@@ -35,7 +35,7 @@ function onAddTaskBtnClick() {
 function onAddSubtaskBtnClick(task) {
   let subtaskList = task.querySelector(".subtask-list");
   let addSubtaskBtn = task.querySelector(".add-subtask-btn");
-  let editTaskBtn = task.querySelector(".edit-task-btn");
+  let editTaskBtn = task.querySelector(".edit-btn");
   let addTimerBtn = task.querySelector(".add-timer-btn");
 
   subtaskList.insertAdjacentHTML("beforeend", newSubtaskMarkup);
@@ -117,7 +117,7 @@ function addTask(taskName) {
             <div class="task-wrapper">
               <label class="task-label"><input type="checkbox" name="task">${taskName}</label>
 
-              <ul class="edit-task-panel visually-hidden">
+              <ul class="edit-panel visually-hidden">
                 <li><button class="rename-btn"></button></li>
 
                 <li><button class="remove-btn"></button></li>
@@ -129,7 +129,7 @@ function addTask(taskName) {
 
               <ul class="work-session-list"></ul>
 
-              <button class="edit-task-btn">
+              <button class="edit-btn">
               </button>
             </div>
             
@@ -147,7 +147,7 @@ function addTask(taskName) {
 
   let task = refs.taskList.lastElementChild;
   let addSubtaskBtn = task.querySelector(".add-subtask-btn");
-  let editTaskBtn = task.querySelector(".edit-task-btn");
+  let editTaskBtn = task.querySelector(".edit-btn");
   let renameTaskBtn = task.querySelector(".rename-btn");
   let removeTaskBtn = task.querySelector(".remove-btn");
   let addTimerBtn = task.querySelector(".add-timer-btn");
@@ -188,7 +188,7 @@ function addSubtask(task, subtaskName, subtaskList, editTaskBtn) {
         <li class="subtask">
           <label class="subtask-label"><input type="checkbox" name="subtask">${subtaskName}</label>
 
-           <ul class="edit-task-panel visually-hidden">
+           <ul class="edit-panel visually-hidden">
               <li><button class="rename-btn"></button></li>
 
               <li><button class="remove-btn"></button></li>
@@ -230,7 +230,7 @@ function addSubtask(task, subtaskName, subtaskList, editTaskBtn) {
 }
 
 function onEditTaskBtnClick(task) {
-  let editTaskPanel = task.querySelector(".edit-task-panel");
+  let editTaskPanel = task.querySelector(".edit-panel");
   let addSubtaskBtn = task.querySelector(".add-subtask-btn");
   let subtasks = Array.from(task.querySelector(".subtask-list").children);
   let workSessions = Array.from(task.querySelectorAll(".work-session"));
@@ -247,7 +247,7 @@ function onEditTaskBtnClick(task) {
 
   subtasks.map((subtask) => {
     return subtask
-      .querySelector(".edit-task-panel")
+      .querySelector(".edit-panel")
       .classList.toggle("visually-hidden");
   });
 

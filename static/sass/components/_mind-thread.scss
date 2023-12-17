@@ -1,0 +1,16 @@
+.thought-list__item {
+    display: flex;
+}
+
+.add-thought-btn {
+    border-radius: 50%;
+    background-color: transparent;
+}
+
+.remove-btn {
+    background-color: red;
+}
+
+.thought-list__thought {
+    display: flex;
+}

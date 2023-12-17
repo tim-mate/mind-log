@@ -177,7 +177,7 @@ button[disabled] {
   background-color: transparent;
 }
 
-.edit-task-btn {
+.edit-btn {
   background-color: blue;
   height: 10px;
   width: 20px;
@@ -201,7 +201,7 @@ button[disabled] {
   display: flex;
 }
 
-.edit-task-panel {
+.edit-panel {
   display: flex;
 }
 
@@ -223,5 +223,22 @@ button[disabled] {
 }
 
 .work-session {
+  display: flex;
+}
+
+.thought-list__item {
+  display: flex;
+}
+
+.add-thought-btn {
+  border-radius: 50%;
+  background-color: transparent;
+}
+
+.remove-btn {
+  background-color: red;
+}
+
+.thought-list__thought {
   display: flex;
 }/*# sourceMappingURL=main.css.map */
