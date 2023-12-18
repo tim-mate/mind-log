@@ -46,6 +46,10 @@ export default class Thought {
 
     if (this.type === "text") {
       this.createText();
+    } else if (this.type === "painter") {
+      this.createPainter();
+    } else if (this.type === "to-do") {
+      this.createToDo();
     }
   }
 
@@ -76,6 +80,7 @@ export default class Thought {
     }
 
     textInput.remove();
+
     if (!Thought.hasThoughts(this.el.thoughtList)) {
       this.addEditBtn();
     }
@@ -89,6 +94,7 @@ export default class Thought {
             <li><button class="remove-btn"></button></li>
         </ul>
     `;
+
     this.el.thought.innerHTML = textMarkup;
 
     let renameThoughtBtn = this.el.thought.querySelector(".rename-btn");
@@ -108,6 +114,121 @@ export default class Thought {
   onRemoveTextInputBtnClick() {
     this.el.thought.remove();
   }
+
+  createPainter() {
+    if (!Thought.hasThoughts(this.el.thoughtList)) {
+      this.addEditBtn();
+    }
+
+    this.el.thought.innerHTML = `
+        <canvas class="thought thought--canvas"></canvas>
+        
+        <ul class="edit-panel visually-hidden">
+            <li><button class="clear-btn"></button></li>
+
+            <li><button class="remove-btn"></button></li>
+        </ul>
+      `;
+
+    this.el.canvas = this.el.thought.querySelector(".thought--canvas");
+    this.el.clearCanvasBtn = this.el.thought.querySelector(".clear-btn");
+    this.el.removeCanvasBtn = this.el.thought.querySelector(".remove-btn");
+    this.el.canvas.height = 400;
+    this.el.canvas.width = window.innerWidth / 2 - 50;
+
+    let context = this.el.canvas.getContext("2d");
+    let isPainting = false;
+
+    this.el.canvas.addEventListener("mousedown", function () {
+      isPainting = true;
+    });
+
+    this.el.canvas.addEventListener("mouseup", function () {
+      isPainting = false;
+      context.beginPath();
+    });
+
+    this.el.canvas.addEventListener("mousemove", function (event) {
+      if (!isPainting) {
+        return;
+      }
+
+      let x = event.offsetX;
+      let y = event.offsetY;
+
+      draw(x, y);
+    });
+
+    this.el.clearCanvasBtn.addEventListener(
+      "click",
+      onClearCanvasBtnClick.bind(this)
+    );
+
+    this.el.removeCanvasBtn.addEventListener(
+      "click",
+      this.onRemoveThoughtBtnClick.bind(this)
+    );
+
+    function draw(x, y) {
+      context.lineWidth = 8;
+      context.lineTo(x, y);
+
+      context.strokeStyle = "navy";
+      context.stroke();
+
+      context.beginPath();
+      context.arc(x, y, 4, 0, Math.PI * 2);
+
+      context.fillStyle = "navy";
+      context.fill();
+
+      context.beginPath();
+      context.moveTo(x, y);
+    }
+
+    function onClearCanvasBtnClick() {
+      context.fillStyle = "#FBF8BE";
+      context.fillRect(0, 0, this.el.canvas.width, this.el.canvas.height);
+
+      context.beginPath();
+      context.fillStyle = "black";
+      isPainting = false;
+    }
+  }
+
+  // createToDo() {
+  //   let todoInputMarkup = `
+  //       <input type="checkbox" name="todo-checkbox">
+  //       <input class="thought__input--todo" name="thought-todo" type="text">
+  //       <button class="remove-btn"></button>
+  //   `;
+  //   this.el.thought.innerHTML = todoInputMarkup;
+
+  //   let todoInput = this.el.thought.querySelector(".thought__input--todo");
+  //   let removeTodoInputBtn = this.el.thought.querySelector(".remove-btn");
+
+  //   todoInput.focus();
+  //   todoInput.addEventListener("change", this.onTodoInputChange.bind(this));
+  //   removeTodoInputBtn.addEventListener(
+  //     "click",
+  //     this.onRemoveTodoInputBtnClick.bind(this)
+  //   );
+  // }
+
+  // onTodoInputChange(event) {
+  //   let todoInput = event.target;
+  //   let todoInputValue = todoInput.value;
+
+  //   if (Thought.isEmpty(todoInputValue)) {
+  //     throw new Error("To-Do can't be empty.");
+  //   }
+
+  //   todoInput.remove();
+
+  //   if (!Thought.hasThoughts(this.el.thoughtList)) {
+  //     this.addEditBtn();
+  //   }
+  // }
 
   addEditBtn() {
     let editBtnMarkup = '<button class="edit-btn"></button>';
@@ -129,21 +250,27 @@ export default class Thought {
       editPanel.classList.toggle("visually-hidden");
     });
 
-    if (this.el.addThoughtBtn.hasAttribute("disabled")) {
-      this.el.addThoughtBtn.removeAttribute("disabled");
-    } else {
-      this.el.addThoughtBtn.setAttribute("disabled", "true");
-    }
+    Thought.toggle(this.el.addThoughtBtn);
   }
 
   onRenameThoughtBtnClick() {
     let text = this.el.thought.querySelector(".thought").textContent;
-    let newTextInputMarkup = `<input name="new-text" type="text">`;
+    let newTextInputMarkup = `
+      <input name="new-text" type="text">
+
+      <ul class="edit-panel">
+            <li><button class="rename-btn" disabled></button></li>
+
+            <li><button class="remove-btn"></button></li>
+        </ul>
+    `;
 
     this.el.thought.innerHTML = newTextInputMarkup;
 
     let newTextInput = this.el.thought.querySelector("input");
+    let removeBtn = this.el.thought.querySelector(".remove-btn");
     let isEnterKeyPressed = false;
+
     newTextInput.value = text;
     newTextInput.focus();
 
@@ -159,6 +286,11 @@ export default class Thought {
         this.onNewTextInputChange.bind(this, event)();
       }
     });
+
+    removeBtn.addEventListener(
+      "click",
+      this.onRemoveThoughtBtnClick.bind(this)
+    );
   }
 
   onNewTextInputChange(event) {

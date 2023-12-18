@@ -162,13 +162,18 @@ button[disabled] {
 .work-thread {
   background-color: #234E70;
   width: 50vw;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .mind-thread {
   background-color: #FBF8BE;
   width: 50vw;
-  height: 100vh;
+  min-height: 100vh;
+}
+
+.work-thread {
+  color: #FFF5EE;
+  font-size: 24px;
 }
 
 .add-task-btn,
@@ -226,6 +231,11 @@ button[disabled] {
   display: flex;
 }
 
+.mind-thread {
+  color: navy;
+  font-size: 24px;
+}
+
 .thought-list__item {
   display: flex;
 }
@@ -241,4 +251,8 @@ button[disabled] {
 
 .thought-list__thought {
   display: flex;
+}
+
+.canvas:hover {
+  cursor: url("../../");
 }/*# sourceMappingURL=main.css.map */

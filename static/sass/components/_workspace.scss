@@ -5,11 +5,11 @@
 .work-thread {
     background-color: $workBackgroundColor;
     width: 50vw;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .mind-thread {
     background-color: $mindBackgroundColor;
     width: 50vw;
-    height: 100vh;
+    min-height: 100vh;
 }
