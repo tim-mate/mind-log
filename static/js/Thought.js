@@ -64,55 +64,15 @@ export default class Thought {
     let removeTextInputBtn = this.el.thought.querySelector(".remove-btn");
 
     textInput.focus();
-    textInput.addEventListener("change", this.onTextInputChange.bind(this));
+    textInput.addEventListener(
+      "change",
+      this.onThoughtInputChange.bind(this, "text")
+    );
+
     removeTextInputBtn.addEventListener(
       "click",
-      this.onRemoveTextInputBtnClick.bind(this)
+      this.onRemoveThoughtInputBtnClick.bind(this)
     );
-  }
-
-  onTextInputChange(event) {
-    let textInput = event.target;
-    let textInputValue = textInput.value;
-
-    if (Thought.isEmpty(textInputValue)) {
-      throw new Error("Thought can't be empty.");
-    }
-
-    textInput.remove();
-
-    if (!Thought.hasThoughts(this.el.thoughtList)) {
-      this.addEditBtn();
-    }
-
-    let textMarkup = `
-        <p class="thought thought--text">${textInputValue}</p>
-
-        <ul class="edit-panel visually-hidden">
-            <li><button class="rename-btn"></button></li>
-
-            <li><button class="remove-btn"></button></li>
-        </ul>
-    `;
-
-    this.el.thought.innerHTML = textMarkup;
-
-    let renameThoughtBtn = this.el.thought.querySelector(".rename-btn");
-    let removeThoughtBtn = this.el.thought.querySelector(".remove-btn");
-
-    renameThoughtBtn.addEventListener(
-      "click",
-      this.onRenameThoughtBtnClick.bind(this)
-    );
-
-    removeThoughtBtn.addEventListener(
-      "click",
-      this.onRemoveThoughtBtnClick.bind(this)
-    );
-  }
-
-  onRemoveTextInputBtnClick() {
-    this.el.thought.remove();
   }
 
   createPainter() {
@@ -196,39 +156,186 @@ export default class Thought {
     }
   }
 
-  // createToDo() {
-  //   let todoInputMarkup = `
-  //       <input type="checkbox" name="todo-checkbox">
-  //       <input class="thought__input--todo" name="thought-todo" type="text">
-  //       <button class="remove-btn"></button>
-  //   `;
-  //   this.el.thought.innerHTML = todoInputMarkup;
+  createToDo() {
+    let todoInputMarkup = `
+        <input type="checkbox" name="todo-checkbox">
+        <input class="thought__input--todo" name="thought-todo" type="text">
+        <button class="remove-btn"></button>
+    `;
+    this.el.thought.innerHTML = todoInputMarkup;
 
-  //   let todoInput = this.el.thought.querySelector(".thought__input--todo");
-  //   let removeTodoInputBtn = this.el.thought.querySelector(".remove-btn");
+    let todoInput = this.el.thought.querySelector(".thought__input--todo");
+    let removeTodoInputBtn = this.el.thought.querySelector(".remove-btn");
 
-  //   todoInput.focus();
-  //   todoInput.addEventListener("change", this.onTodoInputChange.bind(this));
-  //   removeTodoInputBtn.addEventListener(
-  //     "click",
-  //     this.onRemoveTodoInputBtnClick.bind(this)
-  //   );
-  // }
+    todoInput.focus();
+    todoInput.addEventListener(
+      "change",
+      this.onThoughtInputChange.bind(this, "to-do")
+    );
 
-  // onTodoInputChange(event) {
-  //   let todoInput = event.target;
-  //   let todoInputValue = todoInput.value;
+    removeTodoInputBtn.addEventListener(
+      "click",
+      this.onRemoveThoughtInputBtnClick.bind(this)
+    );
+  }
 
-  //   if (Thought.isEmpty(todoInputValue)) {
-  //     throw new Error("To-Do can't be empty.");
-  //   }
+  onThoughtInputChange(type, event) {
+    let input = event.target;
+    let inputValue = input.value;
 
-  //   todoInput.remove();
+    if (Thought.isEmpty(inputValue)) {
+      throw new Error("Thought can't be empty.");
+    }
 
-  //   if (!Thought.hasThoughts(this.el.thoughtList)) {
-  //     this.addEditBtn();
-  //   }
-  // }
+    input.remove();
+
+    if (!Thought.hasThoughts(this.el.thoughtList)) {
+      this.addEditBtn();
+    }
+
+    let thoughtMarkup;
+    if (type === "text") {
+      thoughtMarkup = `
+        <p class="thought thought--text">${inputValue}</p>
+
+        <ul class="edit-panel visually-hidden">
+            <li><button class="rename-btn"></button></li>
+
+            <li><button class="remove-btn"></button></li>
+        </ul>
+    `;
+    } else if (type === "to-do") {
+      thoughtMarkup = `
+      <label class="thought thought--todo"><input name="to-do" type="checkbox">${inputValue}</label>
+
+      <ul class="edit-panel visually-hidden">
+            <li><button class="rename-btn"></button></li>
+
+            <li><button class="remove-btn"></button></li>
+        </ul>
+      `;
+    }
+
+    this.el.thought.innerHTML = thoughtMarkup;
+
+    let renameThoughtBtn = this.el.thought.querySelector(".rename-btn");
+    let removeThoughtBtn = this.el.thought.querySelector(".remove-btn");
+
+    renameThoughtBtn.addEventListener(
+      "click",
+      this.onRenameThoughtBtnClick.bind(this, type)
+    );
+
+    removeThoughtBtn.addEventListener(
+      "click",
+      this.onRemoveThoughtBtnClick.bind(this)
+    );
+  }
+
+  onRemoveThoughtInputBtnClick() {
+    this.el.thought.remove();
+  }
+
+  onRenameThoughtBtnClick(type) {
+    let text = this.el.thought.querySelector(".thought").textContent;
+    let newThoughtInputMarkup;
+
+    if (type === "text") {
+      newThoughtInputMarkup = `
+      <input name="new-text" type="text">
+
+      <ul class="edit-panel">
+        <li><button class="rename-btn" disabled></button></li>
+        
+        <li><button class="remove-btn"></button></li>
+      </ul>
+    `;
+    } else if (type === "to-do") {
+      newThoughtInputMarkup = `
+      <input name="new-todo-checkbox" type="checkbox">
+      <input name="new-todo" type="text">
+
+      <ul class="edit-panel">
+        <li><button class="rename-btn" disabled></button></li>
+        
+        <li><button class="remove-btn"></button></li>
+      </ul>
+    `;
+    }
+
+    this.el.thought.innerHTML = newThoughtInputMarkup;
+
+    let newThoughtInput = this.el.thought.querySelector('input[type="text"]');
+    let removeBtn = this.el.thought.querySelector(".remove-btn");
+    let isEnterKeyPressed = false;
+
+    newThoughtInput.value = text;
+    newThoughtInput.focus();
+
+    newThoughtInput.addEventListener("blur", (event) => {
+      if (!isEnterKeyPressed) {
+        this.onNewThoughtInputChange.bind(this, type, event)();
+      }
+    });
+
+    newThoughtInput.addEventListener("keydown", (event) => {
+      if (event.code === "Enter") {
+        isEnterKeyPressed = true;
+        this.onNewThoughtInputChange.bind(this, type, event)();
+      }
+    });
+
+    removeBtn.addEventListener(
+      "click",
+      this.onRemoveThoughtBtnClick.bind(this)
+    );
+  }
+
+  onNewThoughtInputChange(type, event) {
+    let input = event.target;
+    let inputValue = input.value;
+
+    if (!Thought.isEmpty(inputValue)) {
+      let thoughtMarkup;
+
+      if (type === "text") {
+        thoughtMarkup = `
+          <p class="thought thought--text">${inputValue}</p>
+
+          <ul class="edit-panel">
+            <li><button class="rename-btn"></button></li>
+
+            <li><button class="remove-btn"></button></li>
+          </ul>
+        `;
+      } else if (type === "to-do") {
+        thoughtMarkup = `
+          <label class="thought thought--todo"><input name="to-do" type="checkbox">${inputValue}</label>
+
+          <ul class="edit-panel">
+            <li><button class="rename-btn"></button></li>
+
+            <li><button class="remove-btn"></button></li>
+          </ul>
+        `;
+      }
+
+      this.el.thought.innerHTML = thoughtMarkup;
+
+      let renameBtn = this.el.thought.querySelector(".rename-btn");
+      let removeBtn = this.el.thought.querySelector(".remove-btn");
+
+      renameBtn.addEventListener(
+        "click",
+        this.onRenameThoughtBtnClick.bind(this, type)
+      );
+
+      removeBtn.addEventListener(
+        "click",
+        this.onRemoveThoughtBtnClick.bind(this)
+      );
+    }
+  }
 
   addEditBtn() {
     let editBtnMarkup = '<button class="edit-btn"></button>';
@@ -251,78 +358,6 @@ export default class Thought {
     });
 
     Thought.toggle(this.el.addThoughtBtn);
-  }
-
-  onRenameThoughtBtnClick() {
-    let text = this.el.thought.querySelector(".thought").textContent;
-    let newTextInputMarkup = `
-      <input name="new-text" type="text">
-
-      <ul class="edit-panel">
-            <li><button class="rename-btn" disabled></button></li>
-
-            <li><button class="remove-btn"></button></li>
-        </ul>
-    `;
-
-    this.el.thought.innerHTML = newTextInputMarkup;
-
-    let newTextInput = this.el.thought.querySelector("input");
-    let removeBtn = this.el.thought.querySelector(".remove-btn");
-    let isEnterKeyPressed = false;
-
-    newTextInput.value = text;
-    newTextInput.focus();
-
-    newTextInput.addEventListener("blur", (event) => {
-      if (!isEnterKeyPressed) {
-        this.onNewTextInputChange.bind(this, event)();
-      }
-    });
-
-    newTextInput.addEventListener("keydown", (event) => {
-      if (event.code === "Enter") {
-        isEnterKeyPressed = true;
-        this.onNewTextInputChange.bind(this, event)();
-      }
-    });
-
-    removeBtn.addEventListener(
-      "click",
-      this.onRemoveThoughtBtnClick.bind(this)
-    );
-  }
-
-  onNewTextInputChange(event) {
-    let input = event.target;
-    let inputValue = input.value;
-
-    if (!Thought.isEmpty(inputValue)) {
-      let textMarkup = `
-        <p class="thought thought--text">${inputValue}</p>
-
-        <ul class="edit-panel">
-            <li><button class="rename-btn"></button></li>
-
-            <li><button class="remove-btn"></button></li>
-        </ul>
-    `;
-
-      this.el.thought.innerHTML = textMarkup;
-
-      let renameBtn = this.el.thought.querySelector(".rename-btn");
-      let removeBtn = this.el.thought.querySelector(".remove-btn");
-
-      renameBtn.addEventListener(
-        "click",
-        this.onRenameThoughtBtnClick.bind(this)
-      );
-
-      removeBtn.addEventListener(
-        "click",
-        this.onRemoveThoughtBtnClick.bind(this)
-      );
-    }
   }
 
   onRemoveThoughtBtnClick() {
