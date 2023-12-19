@@ -22,6 +22,7 @@ function onAddThoughtBtnClick() {
     `;
 
   refs.thoughtList.insertAdjacentHTML("beforeend", newThoughtMarkup);
+  refs.addThoughtBtn.setAttribute("disabled", "true");
 
   let newThought = refs.thoughtList.lastElementChild;
   let newThoughtSelect = newThought.querySelector(".thought__thought-select");
@@ -48,4 +49,5 @@ function onNewThoughtSelectChange(thoughtEl, event) {
 
 function onRemoveNewThoughtBtnClick(newThought) {
   newThought.remove();
+  refs.addThoughtBtn.removeAttribute("disabled");
 }

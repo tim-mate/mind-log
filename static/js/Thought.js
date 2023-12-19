@@ -119,6 +119,8 @@ export default class Thought {
       draw(x, y);
     });
 
+    Thought.enable(this.el.addThoughtBtn);
+
     this.el.clearCanvasBtn.addEventListener(
       "click",
       onClearCanvasBtnClick.bind(this)
@@ -217,6 +219,7 @@ export default class Thought {
     }
 
     this.el.thought.innerHTML = thoughtMarkup;
+    Thought.enable(this.el.addThoughtBtn);
 
     let renameThoughtBtn = this.el.thought.querySelector(".rename-btn");
     let removeThoughtBtn = this.el.thought.querySelector(".remove-btn");
@@ -234,6 +237,7 @@ export default class Thought {
 
   onRemoveThoughtInputBtnClick() {
     this.el.thought.remove();
+    Thought.enable(this.el.addThoughtBtn);
   }
 
   onRenameThoughtBtnClick(type) {
