@@ -1,3 +1,12 @@
+body {
+    padding-top: 60px;
+
+    font-size: 24px;
+    font-family: getFont("textFont");
+
+    color: getColor("textColor");
+}
+
 button:hover {
     cursor: pointer;
 }
@@ -5,3 +14,16 @@ button:hover {
 button[disabled] {
     background-color: pink;
 }
+
+.title {
+    display: inline-block;
+    margin: 0 auto;
+
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.title-wrapper {
+    text-align: center;
+}
+

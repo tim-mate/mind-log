@@ -1,0 +1,8 @@
+.logo {
+    font-family: getFont("logoFont");
+    font-size: 34px;
+
+    transform: translateX(-(getSize("scrollbarWidth")));
+
+    color: getColor("logoColor");
+}

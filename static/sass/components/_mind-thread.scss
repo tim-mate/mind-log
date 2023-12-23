@@ -1,5 +1,8 @@
 .mind-thread {
-    color: navy;
+    @include thread(getColor("mindBackgroundColor"));
+}
+
+.mind-thread {
     font-size: 24px;
 }
 

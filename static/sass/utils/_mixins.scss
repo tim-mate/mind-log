@@ -1,0 +1,7 @@
+@mixin thread($backgroundColor) {
+    width: 50vw;
+    min-height: 100vh;
+    padding: 25px 25px 200px;
+
+    background-color: $backgroundColor;
+}

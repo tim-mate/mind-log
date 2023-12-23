@@ -1,2 +1,30 @@
-$workBackgroundColor: #234E70;
-$mindBackgroundColor: #FBF8BE;
+$colors: (
+    "headerBackgroundColor": #FFF5EE,
+    "workBackgroundColor": #023E8A,
+    "mindBackgroundColor": #1565C0,
+
+    "textColor": #FFF5EE,
+    "logoColor": #000080,
+    "dividerColor": #FFF5EE,
+);
+
+$fonts: (
+    "logoFont": "Pacifico",
+    "textFont": "Playpen Sans",
+);
+
+$sizes: (
+    "scrollbarWidth": 17px,
+);
+
+@function getColor($colorName) {
+    @return map-get($colors, $colorName);
+}
+
+@function getFont($fontName) {
+    @return map-get($fonts, $fontName);
+}
+
+@function getSize($sizeName) {
+    @return map-get($sizes, $sizeName);
+}

@@ -1,7 +1,25 @@
 .work-thread {
-    color: #FFF5EE;
-    font-size: 24px;
+    @include thread(getColor("workBackgroundColor"));
 }
+
+.work-thread {
+    position: relative;
+}
+
+.work-thread::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translateX(1px);
+    display: inline-block;
+
+    height: 100%;
+    width: 2px;
+    background-color: getColor("dividerColor");
+}
+
+
 
 .add-task-btn,
 .add-subtask-btn {

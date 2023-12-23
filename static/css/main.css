@@ -2,6 +2,12 @@
    v2.0 | 20110126
    License: none (public domain)
 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body,
 div,
@@ -147,6 +153,19 @@ table {
   overflow: hidden;
 }
 
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+body {
+  padding-top: 60px;
+  font-size: 24px;
+  font-family: "Playpen Sans";
+  color: #FFF5EE;
+}
+
 button:hover {
   cursor: pointer;
 }
@@ -155,25 +174,59 @@ button[disabled] {
   background-color: pink;
 }
 
-.container--workspace {
+.title {
+  display: inline-block;
+  margin: 0 auto;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.title-wrapper {
+  text-align: center;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  height: 60px;
+  width: 100vw;
+  background-color: #FFF5EE;
+}
+
+.logo {
+  font-family: "Pacifico";
+  font-size: 34px;
+  transform: translateX(-17px);
+  color: #000080;
+}
+
+.workspace {
   display: flex;
 }
 
 .work-thread {
-  background-color: #234E70;
   width: 50vw;
   min-height: 100vh;
-}
-
-.mind-thread {
-  background-color: #FBF8BE;
-  width: 50vw;
-  min-height: 100vh;
+  padding: 25px 25px 200px;
+  background-color: #023E8A;
 }
 
 .work-thread {
-  color: #FFF5EE;
-  font-size: 24px;
+  position: relative;
+}
+
+.work-thread::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translateX(1px);
+  display: inline-block;
+  height: 100%;
+  width: 2px;
+  background-color: #FFF5EE;
 }
 
 .add-task-btn,
@@ -232,7 +285,13 @@ button[disabled] {
 }
 
 .mind-thread {
-  color: navy;
+  width: 50vw;
+  min-height: 100vh;
+  padding: 25px 25px 200px;
+  background-color: #1565C0;
+}
+
+.mind-thread {
   font-size: 24px;
 }
 
