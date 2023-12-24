@@ -7,11 +7,24 @@ const refs = {
   taskTimerArray: [],
 };
 
-let newTaskMarkup =
-  '<li class="new-task"><input type="checkbox"><input type="text" name="newTaskName" autocomplete="off" autofocus><button class="remove-btn"></button></li>';
+let newTaskMarkup = `<li class="new-task">
+      <input type="checkbox"><input type="text" name="newTaskName" autocomplete="off" autofocus>
+      <button class="remove-btn">
+        <span class="material-icons">
+          close 
+        </span>
+      </button>
+    </li>`;
 
-let newSubtaskMarkup =
-  '<li class="new-subtask"><input type="checkbox"><input type="text" name="newSubtaskName" autocomplete="off" autofocus><button class="remove-btn"></button></li>';
+let newSubtaskMarkup = `
+      <li class="new-subtask"><input type="checkbox">
+        <input type="text" name="newSubtaskName" autocomplete="off" autofocus>
+        <button class="remove-btn">
+          <span class="material-icons">
+            close 
+          </span>
+        </button>
+      </li>`;
 
 refs.addTaskBtn.addEventListener("click", onAddTaskBtnClick);
 
@@ -118,9 +131,21 @@ function addTask(taskName) {
               <label class="task-label"><input type="checkbox" name="task">${taskName}</label>
 
               <ul class="edit-panel visually-hidden">
-                <li><button class="rename-btn"></button></li>
+                <li>
+                  <button class="rename-btn">
+                    <span class="material-icons">
+                      edit
+                    </span>
+                  </button>
+                </li>
 
-                <li><button class="remove-btn"></button></li>
+                <li>
+                  <button class="remove-btn">
+                    <span class="material-icons">
+                      close 
+                    </span>
+                  </button>
+                </li>
               </ul>
 
               <button type="button" class="add-timer-btn">
@@ -130,6 +155,9 @@ function addTask(taskName) {
               <ul class="work-session-list"></ul>
 
               <button class="edit-btn">
+                <span class="material-icons">
+                  edit_note
+                </span>
               </button>
             </div>
             
@@ -189,9 +217,21 @@ function addSubtask(task, subtaskName, subtaskList, editTaskBtn) {
           <label class="subtask-label"><input type="checkbox" name="subtask">${subtaskName}</label>
 
            <ul class="edit-panel visually-hidden">
-              <li><button class="rename-btn"></button></li>
+              <li>
+                <button class="rename-btn">
+                   <span class="material-icons">
+                     edit
+                   </span>
+                 </button>
+              </li>
 
-              <li><button class="remove-btn"></button></li>
+              <li>
+                <button class="remove-btn">
+                  <span class="material-icons">
+                    close 
+                  </span>
+                </button>
+              </li>
             </ul>
 
             <button class="add-timer-btn">
@@ -382,8 +422,15 @@ function onRemoveNewSubtaskBtnClick(
 function onAddTimerBtnClick(task, event) {
   let addTimerBtn = event.currentTarget;
   let workSessionList = task.querySelector(".work-session-list");
-  let workSessionMarkup =
-    '<li class="work-session"><div class="timer"></div><button type="button" class="remove-btn visually-hidden"></button></li>';
+  let workSessionMarkup = `
+      <li class="work-session">
+        <div class="timer"></div>
+        <button type="button" class="remove-btn visually-hidden">
+          <span class="material-icons">
+            close 
+          </span>
+        </button>
+      </li>`;
 
   workSessionList.insertAdjacentHTML("beforeend", workSessionMarkup);
 

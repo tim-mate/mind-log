@@ -27,3 +27,24 @@ button[disabled] {
     text-align: center;
 }
 
+
+.remove-btn {
+    background-color: transparent;
+    border: none;
+
+    color: getColor("textColor");
+}
+
+.edit-btn {
+    background-color: transparent;
+    border: none;
+    
+    color: getColor("textColor");
+}
+
+.rename-btn {
+    background-color: transparent;
+        border: none;
+
+    color: getColor("textColor");
+}

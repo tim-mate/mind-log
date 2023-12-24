@@ -11,6 +11,7 @@
             rel="stylesheet">
 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
         <link rel="stylesheet" href="../static/css/main.min.css">
     </head>
     <body>
@@ -22,6 +23,12 @@
             {% block main %}
             {% endblock %}
         </main>
+
+        <div class="brush visually-hidden">
+            <svg width="20px" height="20px">
+                <use href="../static/images/brush_black_24dp.svg#brush"></use>
+            </svg>
+        </div>
 
         <script type="module" src="../static/js/work-thread.js"></script>
         <script type="module" src="../static/js/mind-thread.js"></script>

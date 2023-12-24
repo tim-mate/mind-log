@@ -15,14 +15,18 @@
     background-color: transparent;
 }
 
-.remove-btn {
-    background-color: red;
-}
-
 .thought-list__thought {
     display: flex;
 }
 
-.canvas:hover {
-    cursor: url('../../');
+
+.clear-btn {
+    background-color: transparent;
+    border: none;
+
+    color: getColor("textColor");
+}
+
+.thought--canvas {
+    cursor: none;
 }

@@ -17,7 +17,11 @@ function onAddThoughtBtnClick() {
           <option value="to-do">to-do</option>
         </select>
 
-        <button class="remove-btn"></button>
+        <button class="remove-btn">
+          <span class="material-icons">
+            close 
+          </span>
+        </button>
       </li>
     `;
 

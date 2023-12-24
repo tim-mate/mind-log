@@ -153,7 +153,7 @@ table {
   overflow: hidden;
 }
 
-.header {
+.add-timer-btn, .header, .brush {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -183,6 +183,34 @@ button[disabled] {
 
 .title-wrapper {
   text-align: center;
+}
+
+.remove-btn {
+  background-color: transparent;
+  border: none;
+  color: #FFF5EE;
+}
+
+.edit-btn {
+  background-color: transparent;
+  border: none;
+  color: #FFF5EE;
+}
+
+.rename-btn {
+  background-color: transparent;
+  border: none;
+  color: #FFF5EE;
+}
+
+.brush {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  fill: #FFF5EE;
 }
 
 .header {
@@ -235,26 +263,6 @@ button[disabled] {
   background-color: transparent;
 }
 
-.edit-btn {
-  background-color: blue;
-  height: 10px;
-  width: 20px;
-}
-
-.rename-btn,
-.remove-btn {
-  height: 5px;
-  width: 5px;
-}
-
-.rename-btn {
-  background-color: green;
-}
-
-.remove-btn {
-  background-color: red;
-}
-
 .task-wrapper {
   display: flex;
 }
@@ -270,10 +278,9 @@ button[disabled] {
 .add-timer-btn {
   width: 25px;
   height: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: yellow;
+  background-color: transparent;
+  color: #FFF5EE;
+  border: none;
 }
 
 .timer__wrapper {
@@ -282,6 +289,12 @@ button[disabled] {
 
 .work-session {
   display: flex;
+}
+
+.timer__control {
+  background-color: transparent;
+  border: none;
+  color: #FFF5EE;
 }
 
 .mind-thread {
@@ -304,14 +317,16 @@ button[disabled] {
   background-color: transparent;
 }
 
-.remove-btn {
-  background-color: red;
-}
-
 .thought-list__thought {
   display: flex;
 }
 
-.canvas:hover {
-  cursor: url("../../");
+.clear-btn {
+  background-color: transparent;
+  border: none;
+  color: #FFF5EE;
+}
+
+.thought--canvas {
+  cursor: none;
 }/*# sourceMappingURL=main.css.map */
