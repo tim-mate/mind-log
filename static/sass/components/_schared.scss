@@ -7,17 +7,19 @@ body {
     color: getColor("textColor");
 }
 
-button:hover {
+button:hover,
+label:hover,
+select:hover {
     cursor: pointer;
 }
 
 button[disabled] {
-    background-color: pink;
+    color: #778899;
 }
 
 .title {
     display: inline-block;
-    margin: 0 auto;
+    margin: 0 auto 30px;
 
     font-size: 28px;
     font-weight: 700;
@@ -27,8 +29,23 @@ button[disabled] {
     text-align: center;
 }
 
+.add-btn {
+    @extend %centered;
+
+    font-family: inherit;
+    font-size: 16px;
+
+    border: none;
+    color: getColor("textColor");
+    background-color: transparent;
+}
 
 .remove-btn {
+    @extend %centered;
+    width: 24px;
+    height: 24px;
+    margin-left: 5px;
+
     background-color: transparent;
     border: none;
 
@@ -36,13 +53,22 @@ button[disabled] {
 }
 
 .edit-btn {
+    @extend %centered;
     background-color: transparent;
     border: none;
     
     color: getColor("textColor");
+
+    .material-icons {
+        font-size: 42px;
+    }
 }
 
 .rename-btn {
+
+    width: 24px;
+    height: 24px;
+    @extend %centered;
     background-color: transparent;
         border: none;
 

@@ -384,7 +384,7 @@ export default class Thought {
 
           <ul class="edit-panel">
             <li>
-              <button class="rename-btn" disabled>
+              <button class="rename-btn">
                 <span class="material-icons">
                   edit
                 </span>

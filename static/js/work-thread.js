@@ -8,7 +8,12 @@ const refs = {
 };
 
 let newTaskMarkup = `<li class="new-task">
-      <input type="checkbox"><input type="text" name="newTaskName" autocomplete="off" autofocus>
+      <input type="checkbox" class="new-task__checkbox">
+
+      <span class="material-icons checkbox-circle">radio_button_unchecked</span>
+
+      <input type="text" name="newTaskName" autocomplete="off" class="new-task__input" autofocus>
+
       <button class="remove-btn">
         <span class="material-icons">
           close 
@@ -17,8 +22,13 @@ let newTaskMarkup = `<li class="new-task">
     </li>`;
 
 let newSubtaskMarkup = `
-      <li class="new-subtask"><input type="checkbox">
-        <input type="text" name="newSubtaskName" autocomplete="off" autofocus>
+      <li class="new-subtask">
+        <input type="checkbox" class="new-subtask__checkbox">
+
+        <span class="material-icons checkbox-circle">radio_button_unchecked</span>
+
+        <input type="text" name="newSubtaskName" autocomplete="off" autofocus class="new-subtask__input">
+
         <button class="remove-btn">
           <span class="material-icons">
             close 
@@ -128,10 +138,15 @@ function addTask(taskName) {
   let taskMarkup = `
         <li class="task">
             <div class="task-wrapper">
-              <label class="task-label"><input type="checkbox" name="task">${taskName}</label>
+              <label class="task-label">
+                <input type="checkbox" name="task" class="task__checkbox">
+                <span class="material-icons checkbox-check">check</span>
+                <span class="material-icons checkbox-circle">radio_button_unchecked</span>
+                ${taskName}
+              </label>
 
               <ul class="edit-panel visually-hidden">
-                <li>
+                <li class="edit-panel__item">
                   <button class="rename-btn">
                     <span class="material-icons">
                       edit
@@ -139,7 +154,7 @@ function addTask(taskName) {
                   </button>
                 </li>
 
-                <li>
+                <li class="edit-panel__item">
                   <button class="remove-btn">
                     <span class="material-icons">
                       close 
@@ -164,9 +179,9 @@ function addTask(taskName) {
             <ul class="subtask-list"></ul>
 
             <button class="add-subtask-btn">  
-            <svg width="10px" height="10px">
-                <use href=""/>
-            </svg>
+              <span class="material-icons">
+                add_circle_outline
+              </span>
             </button>
         </li>
     `;
@@ -214,7 +229,12 @@ function addTask(taskName) {
 function addSubtask(task, subtaskName, subtaskList, editTaskBtn) {
   let subtaskMarkup = `
         <li class="subtask">
-          <label class="subtask-label"><input type="checkbox" name="subtask">${subtaskName}</label>
+          <label class="subtask-label">
+            <input type="checkbox" name="subtask" class="subtask__checkbox">
+            <span class="material-icons checkbox-check">check</span>
+            <span class="material-icons checkbox-circle">radio_button_unchecked</span>
+            ${subtaskName}
+          </label>
 
            <ul class="edit-panel visually-hidden">
               <li>
@@ -296,12 +316,20 @@ function onEditTaskBtnClick(task) {
   });
 }
 
-function onRenameTaskBtnClick(task, labelParent, taskType, event) {
-  let renameBtn = event.target;
+function onRenameTaskBtnClick(task, labelParent, taskType) {
+  let renameBtn = task.querySelector(".rename-btn");
   let label = task.querySelector("label");
-  let taskName = label.childNodes[1].data;
-  let newLabelInputMarkup =
-    '<label class="new-label"><input type="checkbox"><input type="text" name="newName" autocomplete="off" autofocus></label>';
+  let taskName = label.lastChild.data.trim();
+  let taskCompleted = task.querySelector(`.${taskType}__checkbox`).checked;
+  let newLabelInputMarkup = `
+    <label class="${taskType}-label">
+      <input type="checkbox" class="${taskType}__checkbox">
+      <span class="material-icons checkbox-check">check</span>
+      <span class="material-icons checkbox-circle">radio_button_unchecked</span>
+
+      <input type="text" name="newName" class="new-name__input" autocomplete="off" autofocus>
+    </label>
+  `;
 
   disableBtn(renameBtn);
 
@@ -309,37 +337,74 @@ function onRenameTaskBtnClick(task, labelParent, taskType, event) {
   labelParent.insertAdjacentHTML("afterbegin", newLabelInputMarkup);
 
   let newLabelInput = labelParent.querySelector('input[name="newName"]');
+  let newLabelCheckbox = labelParent.querySelector(`.${taskType}__checkbox`);
   let enterKeyPressed = false;
 
   newLabelInput.value = taskName;
   newLabelInput.focus();
 
+  if (taskCompleted) {
+    newLabelCheckbox.checked = true;
+  }
+
   newLabelInput.addEventListener("blur", function (event) {
     if (!enterKeyPressed) {
-      onNewLabelInputChange(task, labelParent, renameBtn, taskType, event);
+      onNewLabelInputChange(
+        task,
+        labelParent,
+        renameBtn,
+        taskType,
+        taskCompleted,
+        event
+      );
     }
   });
 
   newLabelInput.addEventListener("keydown", function (event) {
     if (event.code === "Enter") {
       enterKeyPressed = true;
-      onNewLabelInputChange(task, labelParent, renameBtn, taskType, event);
+      onNewLabelInputChange(
+        task,
+        labelParent,
+        renameBtn,
+        taskType,
+        taskCompleted,
+        event
+      );
     }
   });
 }
 
-function onNewLabelInputChange(task, labelParent, renameBtn, taskType, event) {
+function onNewLabelInputChange(
+  task,
+  labelParent,
+  renameBtn,
+  taskType,
+  taskCompleted,
+  event
+) {
   let newLabelValue = event.target.value;
 
   if (!isEmpty(newLabelValue)) {
-    let labelMarkup = `<label class="${taskType}-label"><input type="checkbox" name="${taskType}">${newLabelValue}</label>`;
-    let newLabel = labelParent.querySelector(".new-label");
+    let labelMarkup = `
+      <label class="${taskType}-label">
+        <input type="checkbox" name="${taskType}" class="${taskType}__checkbox">
+        <span class="material-icons checkbox-check">check</span>
+        <span class="material-icons checkbox-circle">radio_button_unchecked</span>
+        ${newLabelValue}
+      </label>
+    `;
+    let newLabel = labelParent.querySelector(`.${taskType}-label`);
 
     newLabel.remove();
     labelParent.insertAdjacentHTML("afterbegin", labelMarkup);
     enableBtn(renameBtn);
 
     let checkbox = labelParent.querySelector('input[type="checkbox"]');
+
+    if (taskCompleted) {
+      checkbox.checked = true;
+    }
 
     if (taskType === "task") {
       let addTimerBtn = task.querySelector(".add-timer-btn");
@@ -462,7 +527,7 @@ function onAddTimerBtnClick(task, event) {
 
 function onTimerFinish(task, workSession, addTimerBtn, event) {
   let minutes = event.detail.minutes;
-  let timeBlock = `${minutes}min`;
+  let timeBlock = `<p class="time-block">${minutes}min</p>`;
   let timer = workSession.querySelector(".timer");
 
   timer.remove();

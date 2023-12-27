@@ -13,7 +13,7 @@ export default class Timer {
   init() {
     this.el.timer.innerHTML = `
     <div class="timer__wrapper">
-      <input name="minutes" type="number" placeholder="Minutes: " min="0">
+      <input name="minutes" type="number" placeholder="Minutes" min="1" class="timer__input">
     </div>
     
     <button class="timer__control timer__control--start">
@@ -21,12 +21,22 @@ export default class Timer {
     </button>
     `;
 
+    let enterKeyPressed = false;
     this.el.minutesInput = this.el.timer.querySelector('input[name="minutes"]');
     this.el.minutesInput.focus();
-    this.el.minutesInput.addEventListener(
-      "change",
-      this.onMinutesInputChange.bind(this)
-    );
+
+    this.el.minutesInput.addEventListener("blur", (event) => {
+      if (!enterKeyPressed && Number(event.target.value) >= 1) {
+        this.onMinutesInputChange(event);
+      }
+    });
+
+    this.el.minutesInput.addEventListener("keydown", (event) => {
+      if (event.code === "Enter" && Number(event.target.value) >= 1) {
+        enterKeyPressed = true;
+        this.onMinutesInputChange(event);
+      }
+    });
   }
 
   set(minutes) {
@@ -68,7 +78,7 @@ export default class Timer {
     }
 
     this.intervalId = setInterval(() => {
-      if (this.seconds !== 0) {
+      if (this.seconds > 0) {
         this.tick();
       } else {
         this.finish();
@@ -98,7 +108,7 @@ export default class Timer {
   }
 
   finish() {
-    if (this.seconds === 0) {
+    if (this.seconds <= 0) {
       this.playSound("./static/sounds/finish-timer.mp3");
     }
 
