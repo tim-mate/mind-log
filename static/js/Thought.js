@@ -63,6 +63,7 @@ export default class Thought {
         </button>
     `;
     this.el.thought.innerHTML = textInputMarkup;
+    this.el.thought.classList.add("thought-list__item--text");
 
     let textInput = this.el.thought.querySelector(".thought__input--text");
     let removeTextInputBtn = this.el.thought.querySelector(".remove-btn");
@@ -84,6 +85,7 @@ export default class Thought {
       this.addEditBtn();
     }
 
+    this.el.thought.classList.add("thought-list__item--painter");
     this.el.thought.innerHTML = `
         <canvas class="thought thought--canvas"></canvas>
         
@@ -110,8 +112,8 @@ export default class Thought {
     this.el.clearCanvasBtn = this.el.thought.querySelector(".clear-btn");
     this.el.removeCanvasBtn = this.el.thought.querySelector(".remove-btn");
     this.el.canvas.height = 400;
-    this.el.canvas.width = window.innerWidth / 2 - 100;
-
+    this.el.canvas.width = window.innerWidth / 2 - 150;
+    // 115
     let brush = document.querySelector(".brush");
     let context = this.el.canvas.getContext("2d");
     let isPainting = false;
@@ -184,7 +186,10 @@ export default class Thought {
 
   createToDo() {
     let todoInputMarkup = `
-        <input type="checkbox" name="todo-checkbox">
+        <span class="material-icons checkbox-circle">
+          radio_button_unchecked
+        </span>
+
         <input class="thought__input--todo" name="thought-todo" type="text">
         <button class="remove-btn">
           <span class="material-icons">
@@ -193,6 +198,7 @@ export default class Thought {
         </button>
     `;
     this.el.thought.innerHTML = todoInputMarkup;
+    this.el.thought.classList.add("thought-list__item--todo");
 
     let todoInput = this.el.thought.querySelector(".thought__input--todo");
     let removeTodoInputBtn = this.el.thought.querySelector(".remove-btn");
@@ -248,7 +254,16 @@ export default class Thought {
     `;
     } else if (type === "to-do") {
       thoughtMarkup = `
-      <label class="thought thought--todo"><input name="to-do" type="checkbox">${inputValue}</label>
+      <label class="thought thought--todo">
+        <input name="to-do" type="checkbox" class="thought__checkbox">
+
+        <span class="material-icons checkbox-check">check</span>
+
+        <span class="material-icons checkbox-circle">
+          radio_button_unchecked
+        </span>
+        ${inputValue}
+      </label>
 
       <ul class="edit-panel visually-hidden">
             <li>
@@ -293,12 +308,13 @@ export default class Thought {
   }
 
   onRenameThoughtBtnClick(type) {
-    let text = this.el.thought.querySelector(".thought").textContent;
+    let text = this.el.thought.querySelector(".thought").lastChild.data.trim();
     let newThoughtInputMarkup;
+    let todoIsComleted = false;
 
     if (type === "text") {
       newThoughtInputMarkup = `
-      <input name="new-text" type="text">
+      <input name="new-text" type="text" class="new-text__input">
 
       <ul class="edit-panel">
         <li>
@@ -319,9 +335,19 @@ export default class Thought {
       </ul>
     `;
     } else if (type === "to-do") {
+      todoIsComleted =
+        this.el.thought.querySelector(".thought__checkbox").checked;
+
       newThoughtInputMarkup = `
-      <input name="new-todo-checkbox" type="checkbox">
-      <input name="new-todo" type="text">
+      <input name="to-do" type="checkbox" class="thought__checkbox">
+
+      <span class="material-icons checkbox-check">check</span>
+
+      <span class="material-icons checkbox-circle">
+        radio_button_unchecked
+      </span>
+
+      <input name="new-todo" type="text" class="new-todo__input">
 
       <ul class="edit-panel">
         <li>
@@ -352,16 +378,22 @@ export default class Thought {
     newThoughtInput.value = text;
     newThoughtInput.focus();
 
+    if (todoIsComleted) {
+      let newThoughtCheckbox =
+        this.el.thought.querySelector(".thought__checkbox");
+      newThoughtCheckbox.checked = true;
+    }
+
     newThoughtInput.addEventListener("blur", (event) => {
       if (!isEnterKeyPressed) {
-        this.onNewThoughtInputChange.bind(this, type, event)();
+        this.onNewThoughtInputChange.bind(this, type, todoIsComleted, event)();
       }
     });
 
     newThoughtInput.addEventListener("keydown", (event) => {
       if (event.code === "Enter") {
         isEnterKeyPressed = true;
-        this.onNewThoughtInputChange.bind(this, type, event)();
+        this.onNewThoughtInputChange.bind(this, type, todoIsComleted, event)();
       }
     });
 
@@ -371,7 +403,7 @@ export default class Thought {
     );
   }
 
-  onNewThoughtInputChange(type, event) {
+  onNewThoughtInputChange(type, todoIsComleted, event) {
     let input = event.target;
     let inputValue = input.value;
 
@@ -402,7 +434,16 @@ export default class Thought {
         `;
       } else if (type === "to-do") {
         thoughtMarkup = `
-          <label class="thought thought--todo"><input name="to-do" type="checkbox">${inputValue}</label>
+          <label class="thought thought--todo">
+            <input name="to-do" type="checkbox" class="thought__checkbox">
+
+            <span class="material-icons checkbox-check">check</span>
+
+            <span class="material-icons checkbox-circle">
+              radio_button_unchecked
+            </span>
+          ${inputValue}
+          </label>
 
           <ul class="edit-panel">
             <li>
@@ -425,6 +466,13 @@ export default class Thought {
       }
 
       this.el.thought.innerHTML = thoughtMarkup;
+
+      if (todoIsComleted) {
+        let thoughtCheckbox =
+          this.el.thought.querySelector(".thought__checkbox");
+
+        thoughtCheckbox.checked = true;
+      }
 
       let renameBtn = this.el.thought.querySelector(".rename-btn");
       let removeBtn = this.el.thought.querySelector(".remove-btn");

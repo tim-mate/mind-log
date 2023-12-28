@@ -620,18 +620,99 @@ button[disabled] {
   min-height: 100vh;
   padding: 25px 25px 200px;
   background-color: #1565C0;
+  font-size: 24px;
 }
 
-.mind-thread {
-  font-size: 24px;
+.thought-list {
+  position: relative;
+}
+.thought-list .edit-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+}
+.thought-list .checkbox-circle {
+  font-size: 28px;
+}
+.thought-list .checkbox-check {
+  font-size: 32px;
+}
+
+.thought__select {
+  width: 144px;
+  font-family: inherit;
+  font-size: 18px;
+  border: 1px solid #FFF5EE;
+  border-radius: 4px;
+  color: currentColor;
+  background-color: #1565C0;
+}
+.thought__select option {
+  border: 1px solid #FFF5EE;
 }
 
 .thought-list__item {
   display: flex;
+  margin-bottom: 30px;
+}
+.thought-list__item--text, .thought-list__item--todo {
+  align-items: center;
+}
+.thought-list__item--todo {
+  position: relative;
+  padding-left: 32px;
+}
+.thought-list__item--painter {
+  padding-top: 48px;
+  align-items: start;
+}
+
+.thought-list__item--text .edit-panel,
+.thought-list__item--todo .edit-panel {
+  margin-left: 5px;
+}
+
+.thought__checkbox {
+  position: absolute;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+}
+.thought__checkbox:checked + .checkbox-check {
+  opacity: 1;
+}
+.thought--canvas {
+  border: 2px solid;
+  border-radius: 6px;
+}
+
+.select-wrapper {
+  display: flex;
+  align-items: center;
 }
 
 .thought-list__thought {
   display: flex;
+}
+
+.thought--text {
+  max-width: 100%;
+}
+
+.thought__input--text,
+.thought__input--todo,
+.new-text__input,
+.new-todo__input {
+  display: inline-block;
+  width: 294px;
+  height: 40px;
+  border: 1px solid #FFF5EE;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: inherit;
+  color: currentColor;
+  background-color: transparent;
 }
 
 .clear-btn {

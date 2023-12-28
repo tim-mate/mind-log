@@ -1,19 +1,128 @@
 .mind-thread {
     @include thread(getColor("mindBackgroundColor"));
+    font-size: 24px;
 }
 
-.mind-thread {
-    font-size: 24px;
+.thought-list {
+    position: relative;
+
+    .edit-btn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 1;
+    }
+
+    .checkbox-circle {
+        font-size: 28px;
+    }
+
+    .checkbox-check {
+        font-size: 32px;
+    }
+}
+
+
+.thought__select {
+    width: 144px;
+
+    font-family: inherit;
+    font-size: 18px;
+
+    border: 1px solid getColor("textColor");
+    border-radius: 4px;
+
+    color: currentColor;
+    background-color: getColor("mindBackgroundColor");
+
+    option {
+        border: 1px solid getColor("textColor");
+    }
 }
 
 .thought-list__item {
     display: flex;
+
+    margin-bottom: 30px;
+
+    // &:not(:last-child) {
+    //     margin-bottom: 30px;
+    // }
+
+    // &:last-child {
+    //     margin-bottom: 15px;
+    // }
+
+    &--text,
+    &--todo {
+        align-items: center;
+    }
+
+    &--todo {
+        position: relative;
+        padding-left: 32px;
+    }
+
+    &--painter {
+        padding-top: 48px;
+        align-items: start;
+    }
+}
+
+.thought-list__item--text,
+.thought-list__item--todo {
+    .edit-panel {
+        margin-left: 5px;
+    }
+}
+
+.thought {
+    &__checkbox {
+        position: absolute;
+        appearance: none;
+    }
+
+    &__checkbox:checked + .checkbox-check {
+        opacity: 1;
+    }
+
+    &--canvas {
+        border: 2px solid getColor("textClor");
+        border-radius: 6px;
+    }
+}
+
+.select-wrapper {
+    display: flex;
+    align-items: center;
 }
 
 .thought-list__thought {
     display: flex;
 }
 
+.thought--text {
+    max-width: 100%;
+}
+
+
+.thought__input--text,
+.thought__input--todo,
+.new-text__input,
+.new-todo__input {
+    display: inline-block;
+    width: 294px;
+    height: 40px;
+    border: 1px solid getColor("textColor");
+    border-radius: 4px;
+
+    
+    font-family: inherit;
+    font-size: inherit;
+
+    color: currentColor;
+    background-color: transparent;
+}
 
 .clear-btn {
     background-color: transparent;
@@ -25,3 +134,4 @@
 .thought--canvas {
     cursor: none;
 }
+

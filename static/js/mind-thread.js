@@ -10,18 +10,20 @@ refs.addThoughtBtn.addEventListener("click", onAddThoughtBtnClick);
 function onAddThoughtBtnClick() {
   let newThoughtMarkup = `
       <li class="thought-list__item">
-        <select name="thought-types" class="thought__thought-select">
-          <option value="" selected disabled>select type</option>
-          <option value="text">text</option>
-          <option value="painter">painter</option>
-          <option value="to-do">to-do</option>
-        </select>
+        <div class="select-wrapper">
+          <select name="thought-types" class="thought__select">
+            <option value="" selected disabled>select type</option>
+            <option value="text">text</option>
+            <option value="painter">painter</option>
+            <option value="to-do">to-do</option>
+          </select>
 
-        <button class="remove-btn">
-          <span class="material-icons">
-            close 
-          </span>
-        </button>
+          <button class="remove-btn">
+            <span class="material-icons">
+              close 
+            </span>
+          </button>
+        </div>
       </li>
     `;
 
@@ -29,7 +31,7 @@ function onAddThoughtBtnClick() {
   refs.addThoughtBtn.setAttribute("disabled", "true");
 
   let newThought = refs.thoughtList.lastElementChild;
-  let newThoughtSelect = newThought.querySelector(".thought__thought-select");
+  let newThoughtSelect = newThought.querySelector(".thought__select");
   let removeNewThoughtBtn = newThought.querySelector(".remove-btn");
 
   newThoughtSelect.addEventListener(
