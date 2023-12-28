@@ -113,7 +113,7 @@ export default class Thought {
     this.el.removeCanvasBtn = this.el.thought.querySelector(".remove-btn");
     this.el.canvas.height = 400;
     this.el.canvas.width = window.innerWidth / 2 - 150;
-    // 115
+
     let brush = document.querySelector(".brush");
     let context = this.el.canvas.getContext("2d");
     let isPainting = false;
@@ -133,7 +133,18 @@ export default class Thought {
         `top: ${event.pageY - 20}px; left: ${event.pageX}px`
       );
 
-      brush.classList.remove("visually-hidden");
+      if (
+        !(
+          event.offsetY > 0 &&
+          event.offsetY < 400 &&
+          event.offsetX > 0 &&
+          event.offsetX < 600
+        )
+      ) {
+        brush.classList.add("visually-hidden");
+      } else {
+        brush.classList.remove("visually-hidden");
+      }
 
       if (!isPainting) {
         return;
